@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <mvc:default-servlet-handler default-servlet-name="${app.servlet.default.name}"/>
+
+    <mvc:annotation-driven validator="mvcBeanValidator"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <array>
+                <value>classpath:/org/qzerver/resources/configuration/model/settings.properties</value>
+                <value>classpath:/org/qzerver/resources/configuration/servlet/settings.properties</value>
+            </array>
+        </property>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="false"/>
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+        <property name="fileEncoding" value="utf-8"/>
+        <property name="localOverride" value="true"/>
+        <property name="properties" ref="localProperties"/>
+    </bean>
+
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/error/403" view-name="error/403"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/error/404" view-name="error/404"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/error/4xx" view-name="error/4xx"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/error/5xx" view-name="error/5xx"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/error/exception" view-name="error/exception"/>
+
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/info/about" view-name="info/about"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:view-controller path="/info/license" view-name="info/license"/>
+
+    <!--suppress SpringModelInspection -->
+    <mvc:resources mapping="/css/**"
+                   location="${app.servlet.static.resource}${app.servlet.static.prefix}css/"
+                   cache-period="31536000"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:resources mapping="/i/**"
+                   location="${app.servlet.static.resource}${app.servlet.static.prefix}i/"
+                   cache-period="31536000"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:resources mapping="/img/**"
+                   location="${app.servlet.static.resource}${app.servlet.static.prefix}img/"
+                   cache-period="31536000"/>
+    <!--suppress SpringModelInspection -->
+    <mvc:resources mapping="/js/**"
+                   location="${app.servlet.static.resource}${app.servlet.static.prefix}js/"
+                   cache-period="31536000"/>
+
+    <!-- Paging strategies -->
+
+    <bean id="simplePaginableSelectorStrategy" class="com.gainmatrix.lib.paging.strategy.impl.SimplePaginableSelectorStrategy"/>
+
+    <bean id="complexPaginableSelectorStrategy" class="com.gainmatrix.lib.paging.strategy.impl.ComplexPaginableSelectorStrategy"/>
+
+    <!-- Localized messages -->
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <array>
+                <value>classpath:/org/qzerver/resources/configuration/model/messages/messages</value>
+                <value>classpath:/org/qzerver/resources/configuration/servlet/messages/messages</value>
+            </array>
+        </property>
+        <property name="cacheSeconds" value="30"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+        <property name="fallbackToSystemLocale" value="false"/>
+        <property name="alwaysUseMessageFormat" value="false"/>
+    </bean>
+
+    <bean id="messageSourceAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+        <constructor-arg index="0" ref="messageSource"/>
+    </bean>
+
+    <!-- Bean validation for MVC -->
+
+    <bean id="mvcBeanValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="messageInterpolator">
+            <bean class="com.gainmatrix.lib.validation.MessageSourceMessageInterpolator">
+                <property name="messageSource" ref="messageSource"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor">
+        <property name="validator" ref="modelBeanValidator"/>
+    </bean>
+
+    <!-- Exception handling -->
+
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"/>
+        <property name="defaultStatusCode" value="500"/>
+        <property name="defaultErrorView" value="error/5xx"/>
+        <property name="exceptionAttribute" value="exception"/>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.beans.TypeMismatchException">error/4xx</prop>
+                <prop key="org.springframework.dao.OptimisticLockingFailureException">error/5xx</prop>
+                <prop key="org.springframework.dao.DataAccessException">error/5xx</prop>
+                <prop key="org.springframework.web.bind.MissingServletRequestParameterException">error/4xx</prop>
+                <prop key="org.springframework.web.multipart.MultipartException">error/4xx</prop>
+                <prop key="org.springframework.security.authentication.InsufficientAuthenticationException">error/403</prop>
+                <prop key="org.springframework.security.access.AccessDeniedException">error/403</prop>
+                <prop key="com.gainmatrix.lib.business.exception.MissingEntityException">error/404</prop>
+                <prop key="com.gainmatrix.lib.business.exception.AbstractServiceException">error/4xx</prop>
+                <prop key="com.gainmatrix.lib.business.exception.SystemIntegrityException">error/5xx</prop>
+                <prop key="org.apache.commons.fileupload.FileUploadException">error/4xx</prop>
+                <prop key="java.lang.NullPointerException">error/5xx</prop>
+                <prop key="java.lang.IllegalArgumentException">error/4xx</prop>
+                <prop key="java.lang.Exception">error/5xx</prop>
+            </props>
+        </property>
+        <property name="statusCodes">
+            <props>
+                <prop key="error/403">403</prop>
+                <prop key="error/404">404</prop>
+                <prop key="error/4xx">400</prop>
+                <prop key="error/5xx">500</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- File uploading -->
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="${app.servlet.upload.bytes}"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="resolveLazily" value="false"/>
+    </bean>
+
+    <!-- Attributes publishing -->
+
+    <bean id="extendedRenderContextAttributePublisher" class="org.qzerver.web.attribute.render.ExtendedRenderContextAttributePublisher">
+        <property name="chronometer" ref="chronometer"/>
+        <property name="clientI18nResolver" ref="clientI18nResolver"/>
+        <property name="host" value="${app.host}"/>
+        <property name="url" value="${app.url}"/>
+        <property name="applicationName" value="${app.name}"/>
+        <property name="applicationVersion" value="${app.version}"/>
+        <property name="development" value="${app.development}"/>
+    </bean>
+
+    <bean id="attributePublisher" class="com.gainmatrix.lib.web.attribute.impl.CompositeAttributePublisher">
+        <property name="attributePublishers">
+            <list value-type="com.gainmatrix.lib.web.attribute.AttributePublisher">
+                <ref bean="extendedRenderContextAttributePublisher"/>
+                <bean class="com.gainmatrix.lib.freemarker.web.attributes.FreemarkerAttributePublisher"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- I18N resolvers -->
+
+    <bean id="timezoneResolver" class="com.gainmatrix.lib.web.resolver.timezone.impl.FixedTimezoneResolver">
+        <property name="defaultTimeZone" value="${app.view.timezone}"/>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+        <property name="defaultLocale" value="${app.view.locale}"/>
+    </bean>
+
+</beans>

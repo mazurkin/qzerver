@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="mailAgent" class="org.qzerver.model.agent.mail.impl.MailAgentImpl">
+        <property name="javaMailSender" ref="mailSender"/>
+        <property name="emailFrom" value="${app.mail.email.from}"/>
+    </bean>
+
+    <bean name="actionAgent" class="org.qzerver.model.agent.action.impl.ActionAgentImpl">
+        <property name="actionDefinitionMarshaller" ref="actionDefinitionMarshaller"/>
+        <property name="actionResultMarshaller" ref="actionResultMarshaller"/>
+        <property name="executors">
+            <map>
+                <entry key="LOCAL_COMMAND" value-ref="localCommandActionExecutor"/>
+                <entry key="SSH_COMMAND" value-ref="sshCommandActionExecutor"/>
+                <entry key="JMX" value-ref="jmxActionExecutor"/>
+                <entry key="HTTP" value-ref="httpActionExecutor"/>
+                <entry key="SOCKET" value-ref="socketActionExecutor"/>
+                <entry key="DATAGRAM" value-ref="datagramActionExecutor"/>
+                <entry key="CLASS" value-ref="classActionExecutor"/>
+                <entry key="GROOVY" value-ref="groovyActionExecutor"/>
+                <entry key="JDBC" value-ref="jdbcActionExecutor"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Action result and definition marshallers -->
+
+    <bean id="marshallerMapper" class="org.qzerver.system.jackson.JacksonObjectMapperFactoryBean">
+        <property name="serializationFeatures">
+            <map key-type="org.codehaus.jackson.map.SerializationConfig$Feature" value-type="java.lang.Boolean">
+                <entry key="FAIL_ON_EMPTY_BEANS" value="false"/>
+                <entry key="WRITE_ENUMS_USING_TO_STRING" value="false"/>
+                <entry key="WRAP_ROOT_VALUE" value="false"/>
+                <entry key="AUTO_DETECT_FIELDS" value="true"/>
+                <entry key="AUTO_DETECT_GETTERS" value="true"/>
+                <entry key="AUTO_DETECT_IS_GETTERS" value="true"/>
+                <entry key="WRITE_DATES_AS_TIMESTAMPS" value="true"/>
+                <entry key="WRITE_DATE_KEYS_AS_TIMESTAMPS" value="true"/>
+                <entry key="WRITE_EMPTY_JSON_ARRAYS" value="true"/>
+                <entry key="WRITE_NULL_MAP_VALUES" value="true"/>
+            </map>
+        </property>
+        <property name="deserializationFeatures">
+            <map key-type="org.codehaus.jackson.map.DeserializationConfig$Feature" value-type="java.lang.Boolean">
+                <entry key="AUTO_DETECT_CREATORS" value="true"/>
+                <entry key="AUTO_DETECT_FIELDS" value="true"/>
+                <entry key="AUTO_DETECT_SETTERS" value="true"/>
+                <entry key="ACCEPT_EMPTY_STRING_AS_NULL_OBJECT" value="true"/>
+                <entry key="ACCEPT_SINGLE_VALUE_AS_ARRAY" value="true"/>
+                <entry key="UNWRAP_ROOT_VALUE" value="false"/>
+                <entry key="USE_JAVA_ARRAY_FOR_JSON_ARRAY" value="false"/>
+                <entry key="READ_ENUMS_USING_TO_STRING" value="false"/>
+                <entry key="FAIL_ON_NULL_FOR_PRIMITIVES" value="false"/>
+                <entry key="FAIL_ON_UNKNOWN_PROPERTIES" value="false"/>
+                <entry key="FAIL_ON_NUMBERS_FOR_ENUMS" value="false"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="actionResultMarshaller" class="org.qzerver.model.agent.action.providers.marshaller.impl.ActionResultJsonMarshaller">
+        <property name="objectMapper" ref="marshallerMapper"/>
+    </bean>
+
+    <bean id="actionDefinitionMarshaller" class="org.qzerver.model.agent.action.providers.marshaller.impl.ActionDefinitionJsonMarshaller">
+        <property name="objectMapper" ref="marshallerMapper"/>
+    </bean>
+
+    <!-- Action executors -->
+
+    <bean id="httpActionExecutor" class="org.qzerver.model.agent.action.providers.executor.http.HttpActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+        <property name="maxCaptureSize" value="${app.action.capture.size.max}"/>
+    </bean>
+
+    <bean id="jmxActionExecutor" class="org.qzerver.model.agent.action.providers.executor.jmx.JmxActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+    </bean>
+
+    <bean id="localCommandActionExecutor" class="org.qzerver.model.agent.action.providers.executor.localcommand.LocalCommandActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+        <property name="maxCaptureSize" value="${app.action.capture.size.max}"/>
+    </bean>
+
+    <bean id="sshCommandActionExecutor" class="org.qzerver.model.agent.action.providers.executor.sshcommand.SshCommandActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+        <property name="maxCaptureSize" value="${app.action.capture.size.max}"/>
+        <property name="chronometer" ref="chronometer"/>
+    </bean>
+
+    <bean id="socketActionExecutor" class="org.qzerver.model.agent.action.providers.executor.socket.SocketActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+    </bean>
+
+    <bean id="classActionExecutor" class="org.qzerver.model.agent.action.providers.executor.clazz.ClassActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+    </bean>
+
+    <bean id="groovyActionExecutor" class="org.qzerver.model.agent.action.providers.executor.groovy.GroovyActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+    </bean>
+
+    <bean id="datagramActionExecutor" class="org.qzerver.model.agent.action.providers.executor.datagram.DatagramActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+    </bean>
+
+    <bean id="jdbcActionExecutor" class="org.qzerver.model.agent.action.providers.executor.jdbc.JdbcActionExecutor">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+    </bean>
+
+</beans>

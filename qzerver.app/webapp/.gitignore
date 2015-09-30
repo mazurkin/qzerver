@@ -1,0 +1,13 @@
+/.idea
+*.iml
+*.ipr
+*.iws
+
+/target
+
+/*.sh
+/*.bat
+/*.cmd
+
+/release.properties
+*.releaseBackup

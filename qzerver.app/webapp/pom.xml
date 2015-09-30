@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.qzerver</groupId>
+        <artifactId>qzerver-root</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.qzerver</groupId>
+    <artifactId>qzerver-webapp</artifactId>
+    <packaging>war</packaging>
+    <version>0.1-SNAPSHOT</version>
+    <name>QZERVER - Quartz-based job scheduler server - web application</name>
+    <url>http://code.google.com/p/qzerver/</url>
+
+    <description>
+    <![CDATA[
+        Web application implements administration access and API control
+    ]]>
+    </description>
+
+    <properties>
+        <jetty.http.port>8180</jetty.http.port>
+        <jetty.stop.port>8181</jetty.stop.port>
+    </properties>
+
+    <dependencies>
+        <!-- QZERVER -->
+        <dependency>
+            <groupId>org.qzerver</groupId>
+            <artifactId>qzerver-lib-webapp</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Log -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${org.slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${org.log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Skip all test cases on 'test' phase - all test cases here are integration ones -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.11</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- Common settings for Jetty -->
+            <!-- http://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
+            <!-- http://wiki.eclipse.org/Jetty/Tutorial/RequestLog -->
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${org.eclipse.jetty.version}</version>
+                <configuration>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>${jetty.http.port}</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
+                        <filename>${project.build.directory}/jetty-yyyy_mm_dd.request.log</filename>
+                        <retainDays>90</retainDays>
+                        <append>true</append>
+                        <extended>false</extended>
+                        <logTimeZone>UTC</logTimeZone>
+                    </requestLog>
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
+                    <stopKey>jetty-stop</stopKey>
+                    <stopPort>${jetty.stop.port}</stopPort>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Integration tests -->
+        <profile>
+            <id>integration-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Run application in embedded Jetty container -->
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${org.eclipse.jetty.version}</version>
+                        <executions>
+                            <execution>
+                                <id>integration-tests-jetty-start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                                <configuration>
+                                    <scanIntervalSeconds>0</scanIntervalSeconds>
+                                    <daemon>true</daemon>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>integration-tests-jetty-stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Run integrations tests -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.11</version>
+                        <executions>
+                            <execution>
+                                <id>integration-tests-run</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Jetty for live interaction -->
+        <profile>
+            <id>jetty-run-live</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${org.eclipse.jetty.version}</version>
+                        <configuration>
+                            <daemon>false</daemon>
+                            <reload>manual</reload>
+                            <stopKey>jetty-stop</stopKey>
+                            <stopPort>${jetty.stop.port}</stopPort>
+                            <systemProperties>
+                                <systemProperty>
+                                    <name>app.mail.templates.resource</name>
+                                    <value>file:${basedir}/../lib-model/src/main/resources/</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>app.view.templates.resource</name>
+                                    <value>file:${basedir}/../lib-webapp/src/main/resources/</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>app.view.templates.cache.size</name>
+                                    <value>0</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>app.servlet.static.resource</name>
+                                    <value>file:${basedir}/../lib-webapp-static/src/main/resources/</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

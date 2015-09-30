@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context
+    docBase="${qzerver.war}"
+    path=""
+    reloadable="false"
+    disableURLRewriting="true"
+    unpackWAR="false"
+    workDir="${qzerver.wrk}">
+
+</Context>

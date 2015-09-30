@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="quartzSchedulerProperties" class="org.qzerver.system.quartz.QuartzPropertiesFactoryBean">
+        <property name="instanceName" value="QZERVER"/>
+        <property name="instanceId" value="AUTO"/>
+        <property name="schema" value="${app.database.schema}"/>
+        <property name="misfireThresholdMs" value="${app.quartz.misfire.threshold.ms}"/>
+        <property name="clusterCheckinIntervalMs" value="${app.quartz.cluster.checkin.ms}"/>
+        <property name="driverDelegateClass" value="${app.quartz.jdbc.delegate}"/>
+        <property name="threadCount" value="${app.quartz.thread.count}"/>
+        <property name="threadPriority" value="${app.quartz.thread.priority}"/>
+    </bean>
+
+    <bean name="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="autoStartup" value="${app.quartz.start.auto}"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionManager" ref="jdbcTransactionManager"/>
+        <property name="exposeSchedulerInRepository" value="false"/>
+        <property name="overwriteExistingJobs" value="false"/>
+        <property name="waitForJobsToCompleteOnShutdown" value="${app.quartz.shutdown.wait}"/>
+        <property name="quartzProperties" ref="quartzSchedulerProperties"/>
+    </bean>
+
+    <bean name="quartzSchedulerInitializer" class="org.qzerver.system.quartz.QuartzInitializer">
+        <property name="scheduler" ref="quartzScheduler"/>
+        <property name="jobListeners">
+            <array>
+                <bean class="org.qzerver.model.service.job.executor.quartz.QzerverJobListener">
+                    <property name="executorService" ref="scheduleJobExecutorService"/>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.qzerver</groupId>
+        <artifactId>qzerver-root</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.qzerver</groupId>
+    <artifactId>qzerver-lib-ddl</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1-SNAPSHOT</version>
+    <name>QZERVER - Quartz-based job scheduler server - DDL scripts</name>
+    <url>http://code.google.com/p/qzerver/</url>
+
+    <description>
+    <![CDATA[
+        Metapackage packages DDL scripts for fast database creation
+    ]]>
+    </description>
+
+    <dependencies>
+        <!-- QZERVER -->
+        <dependency>
+            <groupId>org.qzerver</groupId>
+            <artifactId>qzerver-lib-entities</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- JPA schema generation -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>jpa-generate-schema</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <mainClass>org.qzerver.system.db.ddl.DdlGeneratorApplication</mainClass>
+                            <classpathScope>runtime</classpathScope>
+                            <arguments>
+                                <argument>${project.build.directory}/generated-resources/org/qzerver/resources/sql/ddl/db</argument>
+                            </arguments>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.gainmatrix</groupId>
+                        <artifactId>gainmatrix-maven-log4j</artifactId>
+                        <version>1.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources</directory>
+            </resource>
+        </resources>
+    </build>
+
+</project>

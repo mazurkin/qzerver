@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+        version="2.0">
+
+    <entity name="ScheduleGroup" class="org.qzerver.model.domain.entities.job.ScheduleGroup">
+        <table name="qz_job_group"/>
+        <attributes>
+            <id name="id">
+                <column name="id" nullable="false"/>
+                <generated-value strategy="TABLE" generator="globalTableGenerator"/>
+            </id>
+            <basic name="name">
+                <column name="name" nullable="false" length="128"/>
+            </basic>
+            <one-to-many name="jobs" fetch="LAZY" mapped-by="group" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+
+</entity-mappings>

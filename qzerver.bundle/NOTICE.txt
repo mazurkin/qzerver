@@ -1,0 +1,79 @@
+===============================================================================
+== Welcome to QZERVER project!
+===============================================================================
+
+Qzerver is an open-source job scheduler based on Quartz scheduler library.
+
+Qzerver is distributed under Apache License 2.0 (see LICENSE.TXT for details)
+
+https://code.google.com/p/qzerver/
+
+===============================================================================
+== Dependency licenses
+===============================================================================
+
+* Tomcat servlet container - http://tomcat.apache.org/
+Apache License, Version 2.0
+
+* Spring Framework libraries - http://www.springsource.org/about
+Apache License, Version 2.0
+
+* Quartz scheduler library - http://quartz-scheduler.org/
+Apache License, Version 2.0
+
+* GainMatrix libraries - http://code.google.com/p/gainmatrix/
+Apache License, Version 2.0
+
+* Google Guava libraries - http://code.google.com/p/guava-libraries/
+Apache License, Version 2.0
+
+* JSR-305 - http://code.google.com/p/jsr-305/
+New BSD License
+
+* Apache Common libraries - http://commons.apache.org/
+Apache License, Version 2.0
+
+* Hibernate libraries - http://www.hibernate.org/
+LGPL v2.1
+
+* Freemarker template library - http://freemarker.sourceforge.net/
+BSD style license (http://freemarker.sourceforge.net/docs/app_license.html)
+
+* Jackson JSON processor - http://jackson.codehaus.org/
+Apache License (AL 2.0) and GNU Lesser GPL (LGPL 2.1)
+
+* PostgreSQL JDBC driver - http://jdbc.postgresql.org/
+BSD License
+
+* MySQL JDBC driver - http://dev.mysql.com/downloads/connector/j/
+GPL License
+
+* Jaybird JDBC driver - http://www.firebirdsql.org/en/jdbc-driver/
+Mozilla Public License 1.1 (MPL 1.1)
+
+* Apache Derby DB and JDBC driver - http://db.apache.org/derby/
+Apache License, Version 2.0
+
+* HSQLDB database and JDBC driver - http://hsqldb.org/
+BSD style license (http://hsqldb.org/web/hsqlLicense.html)
+
+* BoneCP - http://jolbox.com/
+Apache License, Version 2.0
+
+* Liquibase - http://www.liquibase.org/
+Apache License, Version 2.0
+
+* JSCH library - http://www.jcraft.com/jsch/
+BSD style license (http://www.jcraft.com/jsch/LICENSE.txt)
+
+* EasyMock library - http://easymock.org/
+Apache License, Version 2.0
+
+* SLF4J libraries - http://www.slf4j.org/
+MIT license (http://www.slf4j.org/license.html)
+
+* LOG4J libraries - http://logging.apache.org/log4j/
+Apache License, Version 2.0
+
+* JUnit library - http://junit.sourceforge.net/
+Common Public License, Version 1.0

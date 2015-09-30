@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <context:annotation-config/>
+
+    <!-- Application settings -->
+
+    <bean name="localProperties" class="com.gainmatrix.lib.spring.properties.ResourcePropertiesFactoryBean">
+        <property name="resource" value="file:${QZERVER_CONFIGURATION}/settings.properties"/>
+        <property name="mode" value="MANDATORY"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <array>
+                <value>classpath:/org/qzerver/resources/configuration/model/settings.properties</value>
+            </array>
+        </property>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="false"/>
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+        <property name="fileEncoding" value="utf-8"/>
+        <property name="localOverride" value="true"/>
+        <property name="properties" ref="localProperties"/>
+    </bean>
+
+    <!-- Localized messages -->
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <array>
+                <value>classpath:/org/qzerver/resources/configuration/model/messages/messages</value>
+            </array>
+        </property>
+        <property name="cacheSeconds" value="30"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+        <property name="fallbackToSystemLocale" value="false"/>
+        <property name="alwaysUseMessageFormat" value="false"/>
+    </bean>
+
+    <bean id="messageSourceAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+        <constructor-arg index="0" ref="messageSource"/>
+    </bean>
+
+    <!-- Bean validation (via Hibernate Validation framework) -->
+
+    <bean id="modelBeanValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor">
+        <property name="validator" ref="modelBeanValidator"/>
+    </bean>
+
+    <!-- Date&time source -->
+
+    <bean id="chronometer" class="com.gainmatrix.lib.time.impl.SystemChronometer"/>
+
+    <!-- Random token generator -->
+
+    <bean id="randomTokenGenerator" class="com.gainmatrix.lib.random.impl.RandomStringUtilsTokenGenerator">
+        <property name="type" value="ALPHANUMERIC"/>
+    </bean>
+
+    <!-- Default thread error handler -->
+
+    <bean class="com.gainmatrix.lib.thread.exception.ThreadUncaughtExceptionHandlerIninitializer">
+        <property name="exceptionHandler">
+            <bean class="com.gainmatrix.lib.thread.exception.ThreadUncaughtExceptionLoggerHandler"/>
+        </property>
+    </bean>
+
+    <!-- Default application locale -->
+
+    <bean id="defaultLocaleInitializer" class="com.gainmatrix.lib.locale.DefaultLocaleInitializer">
+        <property name="locale" value="${app.forced.default.locale}"/>
+    </bean>
+
+    <!-- Default application timezone -->
+
+    <bean id="defaultTimezoneInitializer" class="com.gainmatrix.lib.timezone.DefaultTimezoneInitializer">
+        <property name="timeZone" value="${app.forced.default.timezone}"/>
+    </bean>
+
+    <!-- Available countries repository -->
+
+    <bean id="localeCountryRepository" class="com.gainmatrix.lib.locale.repository.impl.DefaultLocaleCountryRepository" depends-on="defaultLocaleInitializer">
+    </bean>
+
+    <!-- Available languages repository -->
+
+    <bean id="localeLanguageRepository" class="com.gainmatrix.lib.locale.repository.impl.DefaultLocaleLanguageRepository" depends-on="defaultLocaleInitializer">
+        <property name="allowedCodes">
+            <util:set>
+                <value>en</value>
+            </util:set>
+        </property>
+    </bean>
+
+    <!-- Available timezones repository -->
+
+    <bean id="timezoneRepository" class="com.gainmatrix.lib.timezone.repository.impl.DefaultTimezoneRepository" depends-on="defaultTimezoneInitializer">
+        <property name="chronometer" ref="chronometer"/>
+    </bean>
+
+    <!-- Current execution thread locale&timezone resolver -->
+
+    <bean id="clientI18nResolver" class="com.gainmatrix.lib.spring.i18n.impl.ClientI18nResolverImpl"/>
+
+    <!-- Task executor -->
+
+    <task:executor id="taskExecutor" pool-size="3"/>
+
+    <task:annotation-driven mode="proxy" proxy-target-class="false" executor="taskExecutor"/>
+
+    <!-- Temporary file factory -->
+
+    <bean id="temporaryFileFactory" class="com.gainmatrix.lib.file.temporary.impl.TemporaryFileFactoryImpl">
+        <property name="directory" value="${app.folder.tmp}"/>
+        <property name="prefix" value="qzerver"/>
+        <property name="suffix" value=".tmp"/>
+    </bean>
+
+</beans>

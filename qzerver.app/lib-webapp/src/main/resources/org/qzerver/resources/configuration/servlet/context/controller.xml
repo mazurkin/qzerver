@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.qzerver.web.controller.RootController"/>
+
+    <bean class="org.qzerver.web.controller.jobs.JobsController">
+        <property name="extendedRenderContextAccessor" ref="extendedRenderContextAttributePublisher"/>
+    </bean>
+
+    <bean class="org.qzerver.web.controller.clusters.ClusterGroupExploreController">
+        <property name="extendedRenderContextAccessor" ref="extendedRenderContextAttributePublisher"/>
+        <property name="clusterManagementService" ref="clusterManagementService"/>
+        <property name="pagerSelectorStrategy" ref="complexPaginableSelectorStrategy"/>
+    </bean>
+
+    <bean class="org.qzerver.web.controller.executions.ExecutionsController">
+        <property name="extendedRenderContextAccessor" ref="extendedRenderContextAttributePublisher"/>
+    </bean>
+
+    <bean class="org.qzerver.web.controller.test.ExceptionController"/>
+
+    <bean class="org.qzerver.web.controller.system.SystemController">
+        <property name="extendedRenderContextAccessor" ref="extendedRenderContextAttributePublisher"/>
+        <property name="quartzManagementService" ref="quartzManagementService"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+        >
+
+    <bean name="quartzManagementService" class="org.qzerver.model.service.quartz.management.impl.QuartzManagementServiceImpl">
+        <property name="scheduler" ref="quartzScheduler"/>
+    </bean>
+
+    <bean id="clusterManagementService" class="org.qzerver.model.service.cluster.impl.ClusterManagementServiceImpl">
+        <property name="clusterGroupDao" ref="clusterGroupDao"/>
+        <property name="scheduleJobDao" ref="scheduleJobDao"/>
+        <property name="businessEntityDao" ref="businessEntityDao"/>
+    </bean>
+
+    <bean id="scheduleJobExecutorService" class="org.qzerver.model.service.job.executor.impl.ScheduleJobExecutorServiceImpl">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+        <property name="executionManagementService" ref="scheduleExecutionManagementService"/>
+        <property name="chronometer" ref="chronometer"/>
+        <property name="actionAgent" ref="actionAgent"/>
+        <property name="mailService" ref="mailService"/>
+    </bean>
+
+    <bean id="scheduleJobManagementService" class="org.qzerver.model.service.job.management.impl.ScheduleJobManagementServiceImpl">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+        <property name="businessEntityDao" ref="businessEntityDao"/>
+        <property name="scheduleExecutionDao" ref="scheduleExecutionDao"/>
+        <property name="quartzManagementService" ref="quartzManagementService"/>
+        <property name="scheduleGroupDao" ref="scheduleGroupDao"/>
+        <property name="scheduleActionDao" ref="scheduleActionDao"/>
+        <property name="chronometer" ref="chronometer"/>
+    </bean>
+
+    <bean id="scheduleExecutionManagementService" class="org.qzerver.model.service.job.execution.impl.ScheduleExecutionManagementServiceImpl">
+        <property name="beanValidator" ref="modelBeanValidator"/>
+        <property name="chronometer" ref="chronometer"/>
+        <property name="scheduleExecutionDao" ref="scheduleExecutionDao"/>
+        <property name="businessEntityDao" ref="businessEntityDao"/>
+        <property name="clusterManagementService" ref="clusterManagementService"/>
+        <property name="node" value="${app.host}"/>
+    </bean>
+
+    <bean id="mailService" class="org.qzerver.model.service.mail.impl.MailServiceImpl">
+        <property name="mailAgent" ref="mailAgent"/>
+        <property name="textTemplateFactory" ref="mailFreemarkerTemplateFactory"/>
+        <property name="messageSourceAccessor" ref="messageSourceAccessor"/>
+        <property name="mailTo" value="${app.mail.email.to}"/>
+        <property name="enabled" value="${app.mail.enabled}"/>
+        <property name="locale" value="${app.view.locale}"/>
+        <property name="timezone" value="${app.view.timezone}"/>
+        <property name="node" value="${app.host}"/>
+    </bean>
+
+</beans>

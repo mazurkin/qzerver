@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+        version="2.0">
+
+    <named-query name="ScheduleExecution.deleteExpired">
+        <query>
+        <![CDATA[
+
+                DELETE FROM ScheduleExecution se
+                    WHERE se.fired < :expiration
+
+        ]]>
+        </query>
+    </named-query>
+    
+    <named-query name="ScheduleExecution.detachJob">
+        <query>
+        <![CDATA[
+
+                UPDATE ScheduleExecution se
+                    SET se.job = null
+                    WHERE se.job.id = :scheduleJobId
+
+        ]]>
+        </query>
+    </named-query>
+
+    <entity name="ScheduleExecution" class="org.qzerver.model.domain.entities.job.ScheduleExecution">
+        <table name="qz_execution"/>
+        <attributes>
+            <id name="id">
+                <column name="id" nullable="false"/>
+                <generated-value strategy="TABLE" generator="globalTableGenerator"/>
+            </id>
+            <basic name="name">
+                <column name="name" nullable="false" length="128"/>
+            </basic>
+            <basic name="cron">
+                <column name="cron" nullable="false" length="64"/>
+            </basic>
+            <basic name="forced">
+                <column name="forced" nullable="false"/>
+            </basic>
+            <basic name="fired">
+                <column name="fired" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="scheduled">
+                <column name="scheduled" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="started">
+                <column name="started" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="finished">
+                <column name="finished" nullable="true"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="status">
+                <column name="status" nullable="false"/>
+                <enumerated>ORDINAL</enumerated>
+            </basic>
+            <basic name="timeout">
+                <column name="timeout" nullable="false"/>
+            </basic>
+            <basic name="cancelled">
+                <column name="cancelled" nullable="false"/>
+            </basic>
+            <basic name="allNodes">
+                <column name="all_nodes" nullable="false"/>
+            </basic>
+            <basic name="allNodesPool">
+                <column name="all_nodes_pool" nullable="false"/>
+            </basic>
+            <basic name="strategy">
+                <column name="strategy" nullable="false"/>
+                <enumerated>ORDINAL</enumerated>
+            </basic>
+            <basic name="hostname">
+                <column name="hostname" nullable="false" length="128"/>
+            </basic>
+            <basic name="description">
+                <column name="description" nullable="true" length="1024"/>
+            </basic>
+            <many-to-one name="job" fetch="LAZY" optional="true">
+                <join-column name="schedule_job_id" referenced-column-name="id" nullable="true"/>
+            </many-to-one>
+            <many-to-one name="action" fetch="LAZY" optional="false">
+                <join-column name="schedule_action_id" referenced-column-name="id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="nodes" fetch="LAZY" mapped-by="execution" orphan-removal="true">
+                <order-by>orderIndex</order-by>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="results" fetch="LAZY" mapped-by="execution" orphan-removal="true">
+                <order-by>orderIndex</order-by>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+
+</entity-mappings>

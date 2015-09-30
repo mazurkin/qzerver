@@ -1,0 +1,9 @@
+body {
+    /* Some extra space to make the container go all the way to the bottom of the topbar */
+    padding-top: 5em;
+}
+
+html {
+    /* Lock vertical scroll bar to prevent jumping */
+    overflow-y: scroll;
+}

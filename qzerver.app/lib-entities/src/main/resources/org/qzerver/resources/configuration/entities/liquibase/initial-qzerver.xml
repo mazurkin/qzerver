@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!--
+       * Keep identifiers less than 30 symbols long - that's default length constraint in ORACLE
+       * Don't use reserved words. The word "comment" is reserved in ORACLE
+       -->
+
+    <!-- Qzerver tables -->
+
+    <changeSet id="ddl_qzerver_tables" author="qzerver">
+        <createTable tableName="qz_cluster_group">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_cluster_group"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="node_count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rolling_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_cluster_node">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_cluster_node"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cluster_group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_job">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_job"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="cron" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timezone" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standby" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="limit_nodes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="limit_timeout" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="all_nodes" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="all_nodes_pool" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="strategy" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notify_failure" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cluster_group_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="schedule_group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="schedule_action_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_job_group">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_job_group"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_action">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_action"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identifier" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="archived" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="definition" type="LONGBLOB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="used_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="used_count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_execution">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_execution"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cron" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="forced" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fired" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scheduled" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="started" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finished" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timeout" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cancelled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="all_nodes" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="all_nodes_pool" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="strategy" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hostname" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1024)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="schedule_job_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="schedule_action_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_execution_node">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_execution_node"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="localhost" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="schedule_execution_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="qz_execution_result">
+            <column name="id" autoIncrement="false" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_qz_execution_result"/>
+            </column>
+            <column name="business_model" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_hi" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id_lo" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="succeed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="started" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finished" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payload" type="LONGBLOB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="schedule_execution_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="schedule_execution_node_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+
+    <!-- Constraints -->
+    
+    <changeSet id="ddl_qzerver_constraints" author="qzerver">
+        <addForeignKeyConstraint constraintName="fk_qz_cluster_node_ref_group"
+                baseTableName="qz_cluster_node" baseColumnNames="cluster_group_id"
+                referencedTableName="qz_cluster_group" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_job_ref_cluster"
+                baseTableName="qz_job" baseColumnNames="cluster_group_id"
+                referencedTableName="qz_cluster_group" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_job_ref_group"
+                baseTableName="qz_job" baseColumnNames="schedule_group_id"
+                referencedTableName="qz_job_group" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_job_ref_action"
+                baseTableName="qz_job" baseColumnNames="schedule_action_id"
+                referencedTableName="qz_action" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_exec_ref_job"
+                baseTableName="qz_execution" baseColumnNames="schedule_job_id"
+                referencedTableName="qz_job" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_exec_ref_action"
+                baseTableName="qz_execution" baseColumnNames="schedule_action_id"
+                referencedTableName="qz_action" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_exec_node_ref_exec"
+                baseTableName="qz_execution_node" baseColumnNames="schedule_execution_id"
+                referencedTableName="qz_execution" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_exec_result_ref_exec"
+                baseTableName="qz_execution_result" baseColumnNames="schedule_execution_id"
+                referencedTableName="qz_execution" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_qz_exec_result_ref_node"
+                baseTableName="qz_execution_result" baseColumnNames="schedule_execution_node_id"
+                referencedTableName="qz_execution_node" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Indexes -->
+    
+    <changeSet id="ddl_qzerver_indexes" author="qzerver">
+        <createIndex tableName="qz_execution" indexName="idx_qz_execution_started">
+            <column name="started"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Sequences -->
+
+    <changeSet id="ddl_qzerver_hibernate" author="qzerver">
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="next_val" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

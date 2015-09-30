@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+        version="2.0">
+
+    <entity name="ClusterNode" class="org.qzerver.model.domain.entities.cluster.ClusterNode">
+        <table name="qz_cluster_node"/>
+        <attributes>
+            <id name="id">
+                <column name="id" nullable="false"/>
+                <generated-value strategy="TABLE" generator="globalTableGenerator"/>
+            </id>
+            <basic name="address">
+                <column name="address" nullable="false" length="128"/>
+            </basic>
+            <basic name="description">
+                <column name="description" nullable="true" length="128"/>
+            </basic>
+            <basic name="orderIndex">
+                <column name="order_index" nullable="false"/>
+            </basic>
+            <basic name="enabled">
+                <column name="enabled" nullable="false"/>
+            </basic>
+            <many-to-one name="group" fetch="LAZY" optional="false">
+                <join-column name="cluster_group_id" referenced-column-name="id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
+</entity-mappings>

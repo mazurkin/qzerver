@@ -1,0 +1,17 @@
+<!DOCTYPE import-control PUBLIC
+        "-//Puppy Crawl//DTD Import Control 1.1//EN"
+        "http://www.puppycrawl.com/dtds/import_control_1_1.dtd">
+<import-control pkg="org.qzerver">
+
+    <allow pkg=".*" regex="true"/>
+
+    <subpackage name="model.dao">
+        <disallow pkg="org.qzerver.model.service"/>
+        <disallow pkg="org.qzerver.model.agent"/>
+    </subpackage>
+
+    <subpackage name="system">
+        <disallow pkg="org.qzerver.model"/>
+    </subpackage>
+
+</import-control>

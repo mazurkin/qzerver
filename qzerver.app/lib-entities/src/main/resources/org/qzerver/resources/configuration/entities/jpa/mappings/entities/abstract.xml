@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+        version="2.0">
+
+    <table-generator
+            name="globalTableGenerator"
+            table="hibernate_sequences"
+            initial-value="0"
+            allocation-size="100"
+            pk-column-name="sequence_name"
+            value-column-name="next_val"/>
+
+    <mapped-superclass class="com.gainmatrix.lib.business.entity.AbstractBusinessEntity">
+        <pre-persist method-name="updateBusinessModelVersion"/>
+        <pre-update method-name="updateBusinessModelVersion"/>
+        <attributes>
+            <basic name="businessModelVersion">
+                <column name="business_model" nullable="false"/>
+            </basic>
+            <version name="version"/>
+            <embedded name="businessId"/>
+            <transient name="currentBusinessModelVersion"/>
+        </attributes>
+    </mapped-superclass>
+
+    <embeddable class="com.gainmatrix.lib.business.entity.BusinessId">
+        <attributes>
+            <basic name="hi">
+                <column name="business_id_hi" insertable="true" updatable="false" nullable="false"/>
+            </basic>
+            <basic name="lo">
+                <column name="business_id_lo" insertable="true" updatable="false" nullable="false"/>
+            </basic>
+            <transient name="uuid"/>
+        </attributes>
+    </embeddable>
+
+</entity-mappings>

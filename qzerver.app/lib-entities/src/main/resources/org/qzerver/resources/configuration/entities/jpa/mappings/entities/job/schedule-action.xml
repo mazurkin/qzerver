@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+        version="2.0">
+
+    <named-query name="ScheduleAction.removeOrphaned">
+        <query>
+            <![CDATA[
+
+                DELETE FROM ScheduleAction sa
+                    WHERE (sa.archived = true) AND (sa.usedCount = 0)
+
+        ]]>
+        </query>
+    </named-query>
+
+    <entity name="ScheduleAction" class="org.qzerver.model.domain.entities.job.ScheduleAction">
+        <table name="qz_action"/>
+        <attributes>
+            <id name="id">
+                <column name="id" nullable="false"/>
+                <generated-value strategy="TABLE" generator="globalTableGenerator"/>
+            </id>
+            <basic name="identifier">
+                <column name="identifier" nullable="false" length="1024"/>
+            </basic>
+            <basic name="archived">
+                <column name="archived" nullable="false"/>
+            </basic>
+            <basic name="definition" optional="true">
+                <column name="definition" nullable="true" length="16777216"/>
+                <lob/>
+            </basic>
+            <basic name="created">
+                <column name="created" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="usedDate">
+                <column name="used_date" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="usedCount">
+                <column name="used_count" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+
+</entity-mappings>

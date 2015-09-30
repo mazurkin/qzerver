@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+        version="2.0">
+
+    <entity name="SchedulerJob" class="org.qzerver.model.domain.entities.job.ScheduleJob">
+        <table name="qz_job"/>
+        <attributes>
+            <id name="id">
+                <column name="id" nullable="false"/>
+                <generated-value strategy="TABLE" generator="globalTableGenerator"/>
+            </id>
+            <basic name="name">
+                <column name="name" length="128" nullable="false"/>
+            </basic>
+            <basic name="description">
+                <column name="description" length="512" nullable="true"/>
+            </basic>
+            <basic name="cron">
+                <column name="cron" length="128" nullable="false"/>
+            </basic>
+            <basic name="timezone">
+                <column name="timezone" length="128" nullable="false"/>
+            </basic>
+            <basic name="enabled">
+                <column name="enabled" nullable="false"/>
+            </basic>
+            <basic name="standby">
+                <column name="standby" nullable="false"/>
+            </basic>
+            <basic name="nodesLimit">
+                <column name="limit_nodes" nullable="false"/>
+            </basic>
+            <basic name="timeout">
+                <column name="limit_timeout" nullable="false"/>
+            </basic>
+            <basic name="allNodes">
+                <column name="all_nodes" nullable="false"/>
+            </basic>
+            <basic name="allNodesPool">
+                <column name="all_nodes_pool" nullable="false"/>
+            </basic>
+            <basic name="strategy">
+                <column name="strategy" nullable="false"/>
+            </basic>
+            <basic name="created">
+                <column name="created" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="modified">
+                <column name="modified" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="notifyOnFailure">
+                <column name="notify_failure" nullable="false"/>
+            </basic>
+            <many-to-one name="cluster" fetch="LAZY" optional="true">
+                <join-column name="cluster_group_id" referenced-column-name="id" nullable="true"/>
+            </many-to-one>
+            <many-to-one name="group" fetch="LAZY" optional="false">
+                <join-column name="schedule_group_id" referenced-column-name="id" nullable="false"/>
+            </many-to-one>
+            <one-to-one name="action" fetch="LAZY" optional="false" orphan-removal="false">
+                <join-column name="schedule_action_id" referenced-column-name="id" nullable="false"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+</entity-mappings>

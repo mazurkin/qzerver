@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dbConfigurator" class="org.qzerver.system.db.configurator.DbConfigurator">
+        <property name="type" value="${app.database.type}"/>
+    </bean>
+
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${app.database.driver.class}"/>
+        <property name="jdbcUrl" value="${app.database.url}"/>
+        <property name="username" value="${app.database.username}"/>
+        <property name="password" value="${app.database.password}"/>
+        <property name="defaultAutoCommit" value="false"/>
+        <property name="defaultReadOnly" value="false"/>
+        <property name="defaultTransactionIsolation" value="READ_COMMITTED"/>
+        <property name="partitionCount" value="${app.database.pool.partition.count}"/>
+        <property name="maxConnectionsPerPartition" value="${app.database.pool.partition.max}"/>
+        <property name="minConnectionsPerPartition" value="${app.database.pool.partition.min}"/>
+        <property name="maxConnectionAgeInSeconds" value="${app.database.pool.connection.age.sec}"/>
+        <property name="connectionTimeoutInMs" value="${app.database.pool.connection.timeout.ms}"/>
+        <property name="acquireIncrement" value="1"/>
+        <property name="statementsCacheSize" value="100"/>
+        <property name="releaseHelperThreads" value="1"/>
+        <property name="lazyInit" value="false"/>
+        <property name="logStatementsEnabled" value="${app.database.logging}"/>
+        <property name="connectionTestStatement" value="${app.database.pool.sql.probe}"/>
+    </bean>
+
+    <bean id="liquibase" class="com.gainmatrix.lib.liquibase.ControlledSpringLiquibase">
+        <property name="dataSource" ref="dataSource" />
+        <property name="changeLog" value="classpath:/org/qzerver/resources/configuration/entities/liquibase/changelog.xml"/>
+        <property name="defaultSchema" value="${app.database.schema}"/>
+        <property name="enabled" value="${app.database.autoupdate}"/>
+        <property name="dropFirst" value="${app.database.autodrop}"/>
+    </bean>
+
+    <bean id="jdbcTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

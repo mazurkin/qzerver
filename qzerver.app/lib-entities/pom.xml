@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.qzerver</groupId>
+        <artifactId>qzerver-root</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.qzerver</groupId>
+    <artifactId>qzerver-lib-entities</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1-SNAPSHOT</version>
+    <name>QZERVER - Quartz-based job scheduler server - entities</name>
+    <url>http://code.google.com/p/qzerver/</url>
+
+    <description>
+    <![CDATA[
+        Entity classes and JPA mappings as a separate package
+    ]]>
+    </description>
+
+    <dependencies>
+        <!-- GainMatrix -->
+        <dependency>
+            <groupId>com.gainmatrix</groupId>
+            <artifactId>gainmatrix-lib-beans</artifactId>
+            <version>${com.gainmatrix.lib-beans.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.gainmatrix</groupId>
+            <artifactId>gainmatrix-lib-validation</artifactId>
+            <version>${com.gainmatrix.lib-validation.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Quartz -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${org.quartz.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${org.apache.commons.lang.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${org.apache.commons.collections.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${org.apache.commons.beanutils.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${org.apache.commons.io.version}</version>
+            <scope>compile</scope>
+        </dependency>
+       <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${org.hibernate.core.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${org.hibernate.entitymanager.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${org.hibernate.validator.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${org.slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${org.log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- JPA metamodel generation -->
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>2.0.5</version>
+                <executions>
+                    <execution>
+                        <id>jpa-generate-metamodel</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <outputDirectory>target/generated-sources/jpamodel</outputDirectory>
+                            <processors>
+                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+                            </processors>
+                            <compilerArguments>-Adebug=true -AfullyAnnotationConfigured=false -AaddGeneratedAnnotation=true -AaddGenerationDate=false -AaddSuppressWarningsAnnotation=true -ApersistenceXml=/org/qzerver/resources/configuration/entities/jpa/persistence.xml</compilerArguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-jpamodelgen</artifactId>
+                        <version>1.2.0.Final</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
